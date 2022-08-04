@@ -17,7 +17,7 @@
 
     <section id="main">
         <div id="week-overview">
-            <table>
+            <table id="table">
                 <tr>
                     <th>Day</th>
                     <th>Mon</th>
@@ -29,7 +29,7 @@
                     <th>Sun</th>
                 </tr>
                 <tr>
-                    <td>Hours</td>
+                    <td><strong>Hours</strong></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -41,9 +41,9 @@
             </table>
 
             <div class="counts">
-                <label for="number">Set hours:<input type="number" name="number" id="number"></label>
-                <div class="">Hours reached:<span></span></div>
-                <div class="">Hours left:<span></span></div>
+                <label for="number">Set hours:<input type="number" name="set" id="set"></label>
+                <div class="">Hours reached:<input type="number" name="reached" id="reached" readonly></div>
+                <div class="">Hours left:<input type="number" name="left" id="left" readonly></div>
             </div>
         </div>
     </section>

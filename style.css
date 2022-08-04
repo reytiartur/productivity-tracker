@@ -41,9 +41,41 @@ body {
     overflow: hidden;
 }
 
+#week-overview {
+    font-size: 1.5em;
+}
+
+#table {
+    border-collapse:separate;
+    border: 1px solid black;
+    background: transparent;
+    border-radius: 18px;
+    border-spacing: 0;
+    overflow: hidden;
+}
+
+tr {
+    height: 4em;
+    background: transparent;
+}
+
+
+th {
+    width: 6em;
+    border: 1px solid black;
+    background: white;
+}
+
+td {
+    border: 1px solid black;
+    text-align: center;
+    background: white;
+}
+
 .counts {
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
     margin-top: 2rem;
     border: 2px solid black;
     padding: 1.5rem;
@@ -51,10 +83,20 @@ body {
     font-size: 1.25em;
 }
 
-input[type="number"] {
+.counts input[type="number"] {
     width: 3em;
     height: 2.5em;
     margin-inline: 1em;
     text-align: center;
     font-size: 1em;
+
+    -moz-appearance: textfield;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

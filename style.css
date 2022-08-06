@@ -45,6 +45,8 @@ body {
 
 #week-overview {
     font-size: 1.5em;
+    width: 80%;
+    height: 60%;
 }
 
 #table {
@@ -91,20 +93,29 @@ table input[type="number"]:focus {
 .counts {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     margin-top: 2rem;
     border: 2px solid black;
-    padding: 1.5rem;
+    height: 15%;
+    padding: .5em 1em;
     border-radius: 18px;
     font-size: 1.25em;
 }
 
+.counts > * {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    align-items: center;
+}
+
 .counts input[type="number"] {
-    width: 3em;
-    height: 2.5em;
-    margin-inline: 1em;
+    width: 40%;
+    height: 80%;
+    margin-left: auto;
     text-align: center;
-    font-size: 1em;
+    font-size: 80%;
+    border-radius: 18px;
 
     -moz-appearance: textfield;
 }

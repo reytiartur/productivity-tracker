@@ -50,6 +50,7 @@ body {
 }
 
 #table {
+    margin-top: 2em;
     border-collapse:separate;
     border: 1px solid black;
     background: transparent;
@@ -109,7 +110,7 @@ table input[type="number"]:focus {
     align-items: center;
 }
 
-.counts input[type="number"] {
+.counts input {
     width: 40%;
     height: 80%;
     margin-left: auto;
@@ -120,6 +121,11 @@ table input[type="number"]:focus {
     -moz-appearance: textfield;
 }
 
+.text {
+    text-align: center;
+    font-size: 2em;
+    margin-top: 2.25em;
+}
 
 
 input::-webkit-outer-spin-button,

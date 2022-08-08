@@ -1,3 +1,6 @@
+const LOCAL_STORAGE_WEEKS_OVERVIEW = "weeks.overview"
+let weeksOverview = JSON.parse(localStorage.getItem(LOCAL_STORAGE_WEEKS_OVERVIEW))
+
 let dailyInput = document.querySelectorAll("#table input");
 
 let hoursSet = document.querySelector("#set");
@@ -45,4 +48,8 @@ function setColor(elem, value) {
         elem.style.boxShadow = "inset 0px 0px 28px 20px rgba(240,175,36,0.65)"
         text.innerHTML = `${value} hours left. You have passed an equator.`
     }
+}
+
+function save() {
+    localStorage.setItem(LOCAL_STORAGE_WEEKS_OVERVIEW, JSON.stringify(weeksOverview));
 }

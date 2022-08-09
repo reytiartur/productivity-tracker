@@ -3,11 +3,7 @@ const LOCAL_STORAGE_SELECTED_WEEK = "weeks.selectedWeek";
 const LOCAL_STORAGE_REMEMBER_HOURS = "weeks.hours"
 
 let rememberHours = localStorage.getItem(LOCAL_STORAGE_REMEMBER_HOURS) || 0;
-let weeksOverview = JSON.parse(localStorage.getItem(LOCAL_STORAGE_WEEKS_OVERVIEW)) || [{
-    id: Date.now().toString(),
-    hoursSet: rememberHours,
-    hoursWeek: [0, 0, 0, 0, 0, 0, 0]
-    }];
+let weeksOverview = JSON.parse(localStorage.getItem(LOCAL_STORAGE_WEEKS_OVERVIEW)) || [];
 let selectedWeek = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_WEEK)) || weeksOverview[0];
 
 
@@ -86,6 +82,7 @@ function addNewWeek() {
         hoursLeft: rememberHours,
         hoursWeek: [0, 0, 0, 0, 0, 0, 0]
     });
+    setSelectedForNewWeek()
     renderWeeksList()
     render()
 }
@@ -120,8 +117,8 @@ function renderWeeksList() {
         weekInner.dataset.id = week.id;
         
         weeksListContainer.appendChild(weekInner);
-        markSelectedWeek()
     })
+    markSelectedWeek() 
 }
 
 function markSelectedWeek() {
@@ -138,10 +135,11 @@ function markSelectedWeek() {
 
     let chosenWeek = choseWeek();
     chosenWeek.classList.add("chosen-week");
-
+    render()
 }
 
 function render() {
+    let selectedWeekOverview = document.querySelector("#week-overview");
     selectedWeekOverview.innerHTML = `
             <table id="table">
                 <tr>
@@ -192,7 +190,11 @@ function checkForHours() {
     setColor()
 }
 
-renderWeeksList();
+function setSelectedForNewWeek() {
+    selectedWeek = weeksOverview[weeksOverview.length - 1];
+}
+
+addNewWeek()
 checkForHours()
 updateData() 
 render()

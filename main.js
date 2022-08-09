@@ -6,7 +6,8 @@ let rememberHours = localStorage.getItem(LOCAL_STORAGE_REMEMBER_HOURS) || 0;
 let weeksOverview = JSON.parse(localStorage.getItem(LOCAL_STORAGE_WEEKS_OVERVIEW)) || [{
     id: Date.now().toString(),
     hoursSet: rememberHours,
-    hoursWeek: []}];
+    hoursWeek: [0, 0, 0, 0, 0, 0, 0]
+    }];
 let selectedWeek = JSON.parse(localStorage.getItem(LOCAL_STORAGE_SELECTED_WEEK)) || weeksOverview[0];
 
 
@@ -20,62 +21,56 @@ let hoursLeft = document.querySelector("#left");
 let sidebar = document.querySelector("#sidebar");
 let weeksListContainer = document.querySelector("#weeks");
 let selectedWeekOverview = document.querySelector("#week-overview");
-let text = document.querySelector(".text");
+
+let color = "";
+let text = "Set new goal and try your best to achieve it!";
 
 window.addEventListener("click", (e) => {
     if(e.target.classList.contains("add-week")) addNewWeek()}
 );
 
-dailyInput.forEach(elem => elem.addEventListener("change", countDailyHours));
+window.addEventListener("change", (e) => {
+    if(e.target.id === "set") {
+        hoursSet = document.querySelector("#set");
+        rememberHours = hoursSet.value;
+        save();
+        updateData() 
+    }
 
-hoursSet.addEventListener("change", showHoursLeft); //delete after page rendering from obj added.
-
-hoursSet.addEventListener("change", () => { 
-    rememberHours = hoursSet.value; 
-    save()
 });
-
-window.addEventListener("change", showHoursLeft);
 
 window.addEventListener("click", (e) => {
     if(e.target.classList.contains("week")) choseSelectedWeek(e)}
 );
 
-function countDailyHours() {
-    const sumHoursReached = Array.from(dailyInput).reduce((acc, hours) => acc + Number(hours.value), 0)
-    showHoursReached(sumHoursReached)
-}
+selectedWeekOverview.addEventListener("change", (e) => {
+    if(e.target.tagName.toLowerCase() == "input" && e.target.id !== "set") {
+    updateData()
+}})
 
-function showHoursReached(sum) {
-    hoursReached.value = sum; 
-}
-
-function showHoursLeft() {
-    hoursLeft.value = hoursSet.value - hoursReached.value;
-    if(hoursLeft.value < 0) {
-        hoursLeft.value = `+${Math.abs(hoursLeft.value)}`;
-        hoursLeft.style.boxShadow = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)"
+function setColor() {
+    if(typeof(selectedWeek.hoursLeft) === "string") {
+        color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)";
+        text = `Great! You achieved your goal for this week.`
+        render()
     } else {
-        setColor(hoursLeft, hoursLeft.value);
+        let value = Number(selectedWeek.hoursLeft);
+        if(value == 0) {
+            color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)"
+            text = `Great! You achieved your goal for this week.`
+        } else if(value < (selectedWeek.hoursSet / 4)) {
+            color = "inset 0px 0px 28px 20px rgba(217,232,49,0.65)"
+            text = `${value} hours left. You can see the finish line.`
+        } else if(value > (selectedWeek.hoursSet / 2)) {
+            color = "inset 0px 0px 28px 20px rgba(237,72,66,0.65)"
+            text = `${value} hours left. You still have a long way ahead.`
+        } else if(value < (selectedWeek.hoursSet / 2)) {
+            color = "inset 0px 0px 28px 20px rgba(240,175,36,0.65)"
+            text = `${value} hours left. You have passed an equator.`
+        } 
+        render()
     }
     
-}
-
-function setColor(elem, value) {
-    value = +value;
-    if(value == 0) {
-        elem.style.boxShadow = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)"
-        text.innerHTML = `Great! You achieved your goal for this week.`
-    } else if(value < (hoursSet.value / 4)) {
-        elem.style.boxShadow = "inset 0px 0px 28px 20px rgba(217,232,49,0.65)"
-        text.innerHTML = `${value} hours left. You can see the finish line.`
-    } else if(value > (hoursSet.value / 2)) {
-        elem.style.boxShadow = "inset 0px 0px 28px 20px rgba(237,72,66,0.65)"
-        text.innerHTML = `${value} hours left. You still have a long way ahead.`
-    } else if(value < (hoursSet.value / 2)) {
-        elem.style.boxShadow = "inset 0px 0px 28px 20px rgba(240,175,36,0.65)"
-        text.innerHTML = `${value} hours left. You have passed an equator.`
-    }
 }
 
 function save() {
@@ -88,9 +83,32 @@ function addNewWeek() {
     weeksOverview.push({
         id: Date.now().toString(),
         hoursSet: rememberHours,
-        hoursWeek: []
+        hoursLeft: rememberHours,
+        hoursWeek: [0, 0, 0, 0, 0, 0, 0]
     });
     renderWeeksList()
+    render()
+}
+
+function updateData() {
+    selectedWeek.hoursSet = rememberHours;
+    dailyInput = document.querySelectorAll("#table input");
+    selectedWeek.hoursWeek = Array.from(dailyInput).map(input => {
+        if(input.value == "") {
+            return input.value = 0;
+        } else {
+            return input.value = Number(input.value);
+        }
+    });
+
+    selectedWeek.hoursWeekSum = selectedWeek.hoursWeek.reduce((sum, num) => sum + num, 0);
+    selectedWeek.hoursLeft = selectedWeek.hoursSet - selectedWeek.hoursWeekSum;
+
+    hoursSet.value = rememberHours; 
+    save()
+    checkForHours()
+    setColor()
+
 }
 
 function renderWeeksList() {
@@ -108,7 +126,7 @@ function renderWeeksList() {
 
 function markSelectedWeek() {
     let weeksList = document.querySelectorAll(".week");
-    weeksList.forEach(week => week.classList.remove("chosen-week"))
+    weeksList.forEach(week => week.classList.remove("chosen-week"));
     let choseWeek = function() {
         for(let i = 0; i < weeksList.length; i++) {
             if(weeksList[i].dataset.id === selectedWeek.id) {
@@ -121,12 +139,10 @@ function markSelectedWeek() {
     let chosenWeek = choseWeek();
     chosenWeek.classList.add("chosen-week");
 
-    render()
 }
 
 function render() {
     selectedWeekOverview.innerHTML = `
-        <div id="week-overview">
             <table id="table">
                 <tr>
                     <th>Day</th>
@@ -140,24 +156,23 @@ function render() {
                 </tr>
                 <tr>
                     <td><strong>Hours</strong></td>
-                    <td><input type="number" name="monday" id="monday">${selectedWeek.hoursWeek[0]}</td>
-                    <td><input type="number" name="tuesday" id="tuesday">${selectedWeek.hoursWeek[1]}</td>
-                    <td><input type="number" name="wednesday" id="wednesday">${selectedWeek.hoursWeek[2]}</td>
-                    <td><input type="number" name="thursday" id="thursday">${selectedWeek.hoursWeek[3]}</td>
-                    <td><input type="number" name="friday" id="friday">${selectedWeek.hoursWeek[4]}</td>
-                    <td><input type="number" name="saturday" id="saturday">${selectedWeek.hoursWeek[5]}</td>
-                    <td><input type="number" name="sunday" id="sunday">${selectedWeek.hoursWeek[6]}</td>
+                    <td><input type="number" name="monday" id="monday" value="${selectedWeek.hoursWeek[0]}"></td>
+                    <td><input type="number" name="tuesday" id="tuesday" value="${selectedWeek.hoursWeek[1]}"></td>
+                    <td><input type="number" name="wednesday" id="wednesday" value="${selectedWeek.hoursWeek[2]}"></td>
+                    <td><input type="number" name="thursday" id="thursday" value="${selectedWeek.hoursWeek[3]}"></td>
+                    <td><input type="number" name="friday" id="friday" value="${selectedWeek.hoursWeek[4]}"></td>
+                    <td><input type="number" name="saturday" id="saturday" value="${selectedWeek.hoursWeek[5]}"></td>
+                    <td><input type="number" name="sunday" id="sunday" value="${selectedWeek.hoursWeek[6]}"></td>
                 </tr>
             </table>
 
             <div class="counts">
-                <label for="number">Set hours:<input type="number" name="set" id="set">${rememberHours}</label>
-                <div class="">Hours reached:<input type="number" name="reached" id="reached" readonly>${selectedWeek.hoursWeekSum}</div>
-                <div class="">Hours left:<input name="left" id="left" readonly>${selectedWeek.hoursLeft}</div>
+                <label for="number">Set hours:<input type="number" name="set" id="set" value="${rememberHours}"></label>
+                <div class="">Hours reached:<input type="number" name="reached" id="reached" value="${selectedWeek.hoursWeekSum}" readonly></div>
+                <div class="">Hours left:<input name="left" id="left" value="${selectedWeek.hoursLeft}" readonly style="box-shadow: ${color}"></div>
             </div>
 
-            <p class="text">Set new goal and try your best to achieve it!</p>
-        </div>
+            <p class="text">${text}</p>
     `
 }
 
@@ -170,4 +185,14 @@ function choseSelectedWeek(e) {
     }
 }
 
+function checkForHours() {
+    if(selectedWeek.hoursLeft < 0) {
+      selectedWeek.hoursLeft = `+${Math.abs(selectedWeek.hoursLeft)}`;
+    }
+    setColor()
+}
+
 renderWeeksList();
+checkForHours()
+updateData() 
+render()

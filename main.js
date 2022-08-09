@@ -1,6 +1,6 @@
 const LOCAL_STORAGE_WEEKS_OVERVIEW = "weeks.overview";
 const LOCAL_STORAGE_SELECTED_WEEK = "weeks.selectedWeek";
-const LOCAL_STORAGE_REMEMBER_HOURS = "weeks.hours"
+const LOCAL_STORAGE_REMEMBER_HOURS = "weeks.hours";
 
 let rememberHours = localStorage.getItem(LOCAL_STORAGE_REMEMBER_HOURS) || 0;
 let weeksOverview = JSON.parse(localStorage.getItem(LOCAL_STORAGE_WEEKS_OVERVIEW)) || [];
@@ -18,7 +18,7 @@ let sidebar = document.querySelector("#sidebar");
 let weeksListContainer = document.querySelector("#weeks");
 let selectedWeekOverview = document.querySelector("#week-overview");
 
-let color = "";
+let color = "inset 0px 0px 28px 20px rgba(237,72,66,0.65)";
 let text = "Set new goal and try your best to achieve it!";
 
 window.addEventListener("click", (e) => {
@@ -45,12 +45,12 @@ selectedWeekOverview.addEventListener("change", (e) => {
 }})
 
 function setColor() {
-    if(typeof(selectedWeek.hoursLeft) === "string") {
+    if(typeof(selectedWeek.hoursLeft) === "string" && selectedWeek.hoursLeft.includes("+")) {
         color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)";
         text = `Great! You achieved your goal for this week.`
         render()
     } else {
-        let value = Number(selectedWeek.hoursLeft);
+        let value = selectedWeek.hoursLeft;
         if(value == 0) {
             color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)"
             text = `Great! You achieved your goal for this week.`
@@ -82,6 +82,7 @@ function addNewWeek() {
         hoursLeft: rememberHours,
         hoursWeek: [0, 0, 0, 0, 0, 0, 0]
     });
+    save()
     setSelectedForNewWeek()
     renderWeeksList()
     render()
@@ -104,8 +105,6 @@ function updateData() {
     hoursSet.value = rememberHours; 
     save()
     checkForHours()
-    setColor()
-
 }
 
 function renderWeeksList() {
@@ -187,14 +186,29 @@ function checkForHours() {
     if(selectedWeek.hoursLeft < 0) {
       selectedWeek.hoursLeft = `+${Math.abs(selectedWeek.hoursLeft)}`;
     }
-    setColor()
+    setColor();
 }
 
 function setSelectedForNewWeek() {
     selectedWeek = weeksOverview[weeksOverview.length - 1];
+    save()
 }
 
-addNewWeek()
+function checkStorage() {
+    if(weeksOverview.length == 0) {
+        weeksOverview = [{
+            id: Date.now().toString(),
+            hoursSet: rememberHours,
+            hoursLeft: rememberHours,
+            hoursWeek: [0, 0, 0, 0, 0, 0, 0]
+        }];
+    save()
+    setSelectedForNewWeek()
+    }
+}
+
+checkStorage()
+renderWeeksList()
 checkForHours()
 updateData() 
 render()

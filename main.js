@@ -81,6 +81,7 @@ function addNewWeek() {
         id: Date.now().toString(),
         hoursSet: rememberHours,
         hoursWeek: [0, 0, 0, 0, 0, 0, 0],
+        hoursWeekSum: 0,
         hoursLeft: rememberHours
     });
     save()
@@ -166,7 +167,7 @@ function render() {
             </table>
 
             <div class="counts">
-                <label for="number">Set hours:<input type="number" name="set" id="set" value="${rememberHours}"></label>
+                <label for="number">Set hours:<input type="number" name="set" id="set" value="${selectedWeek.hoursSet}"></label>
                 <div class="">Hours reached:<input type="number" name="reached" id="reached" value="${selectedWeek.hoursWeekSum}" readonly></div>
                 <div class="">Hours left:<input name="left" id="left" value="${selectedWeek.hoursLeft}" readonly style="box-shadow: ${color}"></div>
             </div>
@@ -203,7 +204,8 @@ function checkStorage() {
             id: Date.now().toString(),
             hoursSet: rememberHours,
             hoursLeft: " ",
-            hoursWeek: [0, 0, 0, 0, 0, 0, 0]
+            hoursWeek: [0, 0, 0, 0, 0, 0, 0],
+            hoursWeekSum: 0
         }];
     save()
     setSelectedForNewWeek()

@@ -50,7 +50,7 @@ function setColor() {
         text = `Great! You achieved your goal for this week.`
     } else if(selectedWeek.hoursLeft === " ") {
         color = "inset 0px 0px 28px 20px rgba(237,72,66,0.65)"
-        text = `${rememberHours} hours left. You still have a long way ahead.`
+        text = `Set new goal and try your best to achieve it!`
     } else {
         let value = Number(selectedWeek.hoursLeft);
         if(value == 0) {
@@ -86,6 +86,7 @@ function addNewWeek() {
     save()
     setSelectedForNewWeek()
     renderWeeksList()
+    setColor()
     render()
 }
 
@@ -118,7 +119,8 @@ function renderWeeksList() {
         
         weeksListContainer.appendChild(weekInner);
     })
-    markSelectedWeek() 
+    markSelectedWeek()
+    render()
 }
 
 function markSelectedWeek() {
@@ -135,7 +137,6 @@ function markSelectedWeek() {
 
     let chosenWeek = choseWeek();
     chosenWeek.classList.add("chosen-week");
-    render()
 }
 
 function render() {
@@ -180,6 +181,7 @@ function choseSelectedWeek(e) {
         selectedWeek = selectedWeekArray[0];
         save()
         markSelectedWeek()
+        setColor()
     }
 }
 

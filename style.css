@@ -110,7 +110,7 @@ table input[type="number"]:focus {
     height: 15%;
     padding: .5em 1em;
     border-radius: 18px;
-    font-size: 1em;
+    font-size: 1.25em;
 }
 
 .counts > * {
@@ -133,8 +133,8 @@ table input[type="number"]:focus {
 
 .text {
     text-align: center;
-    font-size: 1.5em;
-    margin-top: 1.25em;
+    font-size: 2em;
+    margin-top: 2.25em;
 }
 
 

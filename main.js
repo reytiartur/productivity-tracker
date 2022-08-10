@@ -48,9 +48,11 @@ function setColor() {
     if(typeof(selectedWeek.hoursLeft) === "string" && selectedWeek.hoursLeft.includes("+")) {
         color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)";
         text = `Great! You achieved your goal for this week.`
-        render()
+    } else if(selectedWeek.hoursLeft === " ") {
+        color = "inset 0px 0px 28px 20px rgba(237,72,66,0.65)"
+        text = `${rememberHours} hours left. You still have a long way ahead.`
     } else {
-        let value = selectedWeek.hoursLeft;
+        let value = Number(selectedWeek.hoursLeft);
         if(value == 0) {
             color = "inset 0px 0px 28px 20px rgba(74,237,76,0.65)"
             text = `Great! You achieved your goal for this week.`
@@ -64,9 +66,8 @@ function setColor() {
             color = "inset 0px 0px 28px 20px rgba(240,175,36,0.65)"
             text = `${value} hours left. You have passed an equator.`
         } 
-        render()
     }
-    
+    render()
 }
 
 function save() {
@@ -79,8 +80,8 @@ function addNewWeek() {
     weeksOverview.push({
         id: Date.now().toString(),
         hoursSet: rememberHours,
-        hoursLeft: rememberHours,
-        hoursWeek: [0, 0, 0, 0, 0, 0, 0]
+        hoursWeek: [0, 0, 0, 0, 0, 0, 0],
+        hoursLeft: rememberHours
     });
     save()
     setSelectedForNewWeek()
@@ -183,7 +184,7 @@ function choseSelectedWeek(e) {
 }
 
 function checkForHours() {
-    if(selectedWeek.hoursLeft < 0) {
+    if(Number(selectedWeek.hoursLeft) < 0) {
       selectedWeek.hoursLeft = `+${Math.abs(selectedWeek.hoursLeft)}`;
     }
     setColor();
@@ -199,7 +200,7 @@ function checkStorage() {
         weeksOverview = [{
             id: Date.now().toString(),
             hoursSet: rememberHours,
-            hoursLeft: rememberHours,
+            hoursLeft: " ",
             hoursWeek: [0, 0, 0, 0, 0, 0, 0]
         }];
     save()
@@ -210,5 +211,4 @@ function checkStorage() {
 checkStorage()
 renderWeeksList()
 checkForHours()
-updateData() 
 render()
